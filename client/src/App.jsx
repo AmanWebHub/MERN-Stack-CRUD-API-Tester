@@ -1,6 +1,10 @@
-
 import { useState } from "react";
 import { useProductStore } from "./stores/productStore";
+import DashboardHeader from "./components/DashboardHeader";
+import FetchProductsPanel from "./components/FetchProductsPanel";
+import CreateProductPanel from "./components/CreateProductPanel";
+import UpdateDeletePanel from "./components/UpdateDeletePanel";
+import ResponsePanel from "./components/ResponsePanel";
 import "./App.css";
 
 const emptyForm = {
@@ -145,238 +149,33 @@ function App() {
 
 	return (
 		<main className="api-dashboard">
-			<header className="dashboard-header">
-				<div>
-					<h1>Product API Tester</h1>
-					<p>Test your Express and MongoDB CRUD operations.</p>
-				</div>
+			<DashboardHeader />
 
-				<span className="api-label">REST API</span>
-			</header>
+			<FetchProductsPanel
+				products={products}
+				loading={loading}
+				onFetch={handleFetch}
+			/>
 
-			<section className="panel">
-				<h2>1. Fetch products</h2>
+			<CreateProductPanel
+				form={form}
+				loading={loading}
+				onChange={handleChange}
+				onSubmit={handleCreate}
+			/>
 
-				<button
-					className="btn btn-get"
-					onClick={handleFetch}
-					disabled={loading}
-				>
-					{loading ? "Processing..." : "GET — Fetch Products"}
-				</button>
+			<UpdateDeletePanel
+				products={products}
+				form={form}
+				selectedId={selectedId}
+				loading={loading}
+				onChange={handleChange}
+				onSelect={handleSelectProduct}
+				onUpdate={handleUpdate}
+				onDelete={handleDelete}
+			/>
 
-				<p className="endpoint">
-					GET <code>/api/products</code>
-				</p>
-
-				<div className="product-list">
-					<h3>Products in Zustand state ({products.length})</h3>
-
-					{products.length === 0 ? (
-						<p>No products loaded. Click Fetch Products.</p>
-					) : (
-						products.map((product) => (
-							<div className="product-item" key={product._id}>
-								<div>
-									<strong>{product.name}</strong>
-									<p>{product.description}</p>
-									<small>ID: {product._id}</small>
-								</div>
-
-								<strong>
-									{Number(product.price).toFixed(2)}
-								</strong>
-							</div>
-						))
-					)}
-				</div>
-			</section>
-
-			<section className="panel">
-				<h2>2. Create a product</h2>
-
-				<p className="endpoint">
-					POST <code>/api/products</code>
-				</p>
-
-				<form onSubmit={handleCreate} className="product-form">
-					<label>
-						Product name
-						<input
-							name="name"
-							value={form.name}
-							onChange={handleChange}
-							placeholder="Enter product name"
-							required
-						/>
-					</label>
-
-					<label>
-						Price
-						<input
-							name="price"
-							type="number"
-							min="0"
-							step="0.01"
-							value={form.price}
-							onChange={handleChange}
-							placeholder="Enter price"
-							required
-						/>
-					</label>
-
-					<label>
-						Description
-						<textarea
-							name="description"
-							value={form.description}
-							onChange={handleChange}
-							placeholder="Enter product description"
-							required
-						/>
-					</label>
-
-					<label>
-						Image URL
-						<input
-							name="image"
-							type="url"
-							value={form.image}
-							onChange={handleChange}
-							placeholder="https://example.com/image.jpg"
-							required
-						/>
-					</label>
-
-					<button
-						className="btn btn-post"
-						type="submit"
-						disabled={loading}
-					>
-						POST — Create Product
-					</button>
-				</form>
-			</section>
-
-			<section className="panel">
-				<h2>3. Update or delete a product</h2>
-
-				<label>
-					Select product
-					<select value={selectedId} onChange={handleSelectProduct}>
-						<option value="">Choose a product...</option>
-						{products.map((product) => (
-							<option key={product._id} value={product._id}>
-								{product.name} — {product._id}
-							</option>
-						))}
-					</select>
-				</label>
-
-				{selectedId && (
-					<p className="selected-id">
-						Product ID: <code>{selectedId}</code>
-					</p>
-				)}
-
-				<form onSubmit={handleUpdate} className="product-form">
-					<label>
-						Product name
-						<input
-							name="name"
-							value={form.name}
-							onChange={handleChange}
-							placeholder="Enter product name"
-							required
-						/>
-					</label>
-
-					<label>
-						Price
-						<input
-							name="price"
-							type="number"
-							min="0"
-							step="0.01"
-							value={form.price}
-							onChange={handleChange}
-							placeholder="Enter price"
-							required
-						/>
-					</label>
-
-					<label>
-						Description
-						<textarea
-							name="description"
-							value={form.description}
-							onChange={handleChange}
-							placeholder="Enter product description"
-							required
-						/>
-					</label>
-
-					<label>
-						Image URL
-						<input
-							name="image"
-							type="url"
-							value={form.image}
-							onChange={handleChange}
-							placeholder="https://example.com/image.jpg"
-							required
-						/>
-					</label>
-
-					<div className="button-row">
-						<button
-							className="btn btn-put"
-							type="submit"
-							disabled={loading || !selectedId}
-						>
-							PUT — Update Product
-						</button>
-
-						<button
-							className="btn btn-delete"
-							type="button"
-							onClick={handleDelete}
-							disabled={loading || !selectedId}
-						>
-							DELETE — Delete Product
-						</button>
-					</div>
-				</form>
-			</section>
-
-			<section className="panel response-panel">
-				<div className="response-heading">
-					<h2>API response</h2>
-					<button
-						className="btn btn-secondary"
-						onClick={() => setResponse(null)}
-					>
-						Clear
-					</button>
-				</div>
-
-				{response ? (
-					<>
-						<p className="response-operation">
-							{response.operation}
-						</p>
-
-						<pre>
-							{JSON.stringify(response, null, 2)}
-						</pre>
-					</>
-				) : (
-					<p>
-						No response yet. Run an operation to see its result
-						here.
-					</p>
-				)}
-			</section>
+			<ResponsePanel response={response} onClear={() => setResponse(null)} />
 		</main>
 	);
 }

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server/server.js",
-     "build": "vite build"
+    "dev": "nodemon server/server.js"
+     
   },
   "type": "module",
   "keywords": [],
