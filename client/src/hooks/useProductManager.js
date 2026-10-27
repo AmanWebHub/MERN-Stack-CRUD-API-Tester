@@ -1,11 +1,5 @@
 import { useState } from "react";
-import { useProductStore } from "./stores/productStore";
-import DashboardHeader from "./components/DashboardHeader";
-import FetchProductsPanel from "./components/FetchProductsPanel";
-import CreateProductPanel from "./components/CreateProductPanel";
-import UpdateDeletePanel from "./components/UpdateDeletePanel";
-import ResponsePanel from "./components/ResponsePanel";
-import "./App.css";
+import { useProductStore } from "../stores/productStore";
 
 const emptyForm = {
 	name: "",
@@ -14,7 +8,7 @@ const emptyForm = {
 	image: "",
 };
 
-function App() {
+export function useProductManager() {
 	const {
 		products,
 		fetchProducts,
@@ -40,6 +34,8 @@ function App() {
 			...extra,
 		});
 	};
+
+	const clearResponse = () => setResponse(null);
 
 	const handleFetch = async () => {
 		setLoading(true);
@@ -147,37 +143,18 @@ function App() {
 		}
 	};
 
-	return (
-		<main className="api-dashboard">
-			<DashboardHeader />
-
-			<FetchProductsPanel
-				products={products}
-				loading={loading}
-				onFetch={handleFetch}
-			/>
-
-			<CreateProductPanel
-				form={form}
-				loading={loading}
-				onChange={handleChange}
-				onSubmit={handleCreate}
-			/>
-
-			<UpdateDeletePanel
-				products={products}
-				form={form}
-				selectedId={selectedId}
-				loading={loading}
-				onChange={handleChange}
-				onSelect={handleSelectProduct}
-				onUpdate={handleUpdate}
-				onDelete={handleDelete}
-			/>
-
-			<ResponsePanel response={response} onClear={() => setResponse(null)} />
-		</main>
-	);
+	return {
+		products,
+		form,
+		selectedId,
+		response,
+		loading,
+		handleChange,
+		handleFetch,
+		handleCreate,
+		handleSelectProduct,
+		handleUpdate,
+		handleDelete,
+		clearResponse,
+	};
 }
-
-export default App;

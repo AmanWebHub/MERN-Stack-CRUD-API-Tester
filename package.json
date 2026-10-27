@@ -1,11 +1,12 @@
 {
-  "name": "Full Stack E-Commerce",
+  "name": "mern-stack-crud-api-tester",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server/server.js"
-     
+    "dev": "cross-env NODE_ENV=development nodemon server/server.js",
+    "build": "pnpm install  && npm  install  --prefix client && npm run build --prefix client",
+    "start": "cross-env NODE_ENV=production node server/server.js"
   },
   "type": "module",
   "keywords": [],
@@ -13,6 +14,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.17.1",
   "dependencies": {
+    "cross-env": "^10.1.0",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
     "mongoose": "^9.11.4"
